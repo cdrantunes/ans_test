@@ -1,0 +1,31 @@
+---
+- name: manage gather_facts
+  hosts: all
+  gather_facts: true
+  vars:
+    distrib: "{{ ansible_facts['distribution'] }}"
+    upt: "{{ ansible_facts['uptime_seconds'] }}"
+    fancy_upt: 
+  tasks:
+
+    - name: get uptime from shell
+      shell:
+        "uptime"
+      register: tempo
+
+    - name: remote uptime command
+      debug:
+         msg: "{{ tempo['stdout'] }}"
+
+    - name: print distribution
+      debug:
+        var: 
+          distrib
+
+    - name: print uptime
+      debug:
+        msg: Uptime {{ now().replace(microsecond=0) - now().fromtimestamp(now(fmt='%s') | int - ansible_uptime_seconds) }}
+
+    - name: dictionary
+      debug:
+        msg: "{{ dict['Distribution', distrib], ['Uptime',upt] }}"

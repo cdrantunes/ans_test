@@ -1,0 +1,56 @@
+---
+- name: manage gather_facts
+  hosts: raspberry
+  gather_facts: true
+  vars:
+  tasks:
+
+    - name: get remote id from shell
+      command:
+        "id"
+      register: id_stdout
+
+    - name: display_id_output
+      debug:
+         msg: "{{ id_stdout['stdout'] }}"
+
+#    - name: print full output
+#      debug:
+#        var: 
+#          id_stdout
+
+    - name: get update info
+      shell: sudo apt update
+      register: upd_stdout
+
+    - name: print update details
+      debug:
+        var: upd_stdout.stdout_lines
+
+    - name: search upgraded in output
+      debug:
+        msg: '{{ upd_stdout.stdout_lines | select("search", "upgraded") | list }}'
+      register: my_line1
+
+    - name: print my_line1
+      debug:
+        var: my_line1
+
+    - name: search up to date in output            
+      debug:
+        msg: '{{ upd_stdout.stdout_lines | select("search", "up to date") | list }}'
+      register: my_line2
+
+    - name: perform upgrade
+      shell: sudo apt upgrade -y
+      when: my_line1.msg | length > 0
+      register: upg_output
+
+    - name: check upgrade result
+      debug:
+        var: upg_output
+
+    - name: all updated
+      debug:
+        msg: All updated
+      when: my_line2.msg | length > 0

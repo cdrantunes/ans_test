@@ -1,0 +1,10 @@
+---
+- name: manage gather_facts
+  hosts: self
+  gather_facts: true
+  tasks:
+
+    - name: print distribution
+      debug:
+        var: 
+          ansible_facts['uptime_seconds']

@@ -1,0 +1,15 @@
+---
+- name: first play
+  hosts: raspberry
+#  become: true
+  tasks:
+
+    - name: Run echo $HOME
+      command: 'echo $HOME'
+      register: result
+
+    - name: Display hello world on current machine
+      debug: 
+         var: result
+         msg: "Hello, it was success"
+      when: result.rc == 0
