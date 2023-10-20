@@ -6,6 +6,11 @@
   tasks:
 
     - name: get remote id from shell
+      become: true
+      become_method: sudo
+      become_flag: '-'
+      become_user: pi
+      become_ask_pass: false
       command:
         "id"
       register: id_stdout
